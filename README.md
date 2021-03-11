@@ -1,1 +1,1 @@
-# python-flask-test
+# python-flask-stores-test
