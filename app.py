@@ -11,6 +11,7 @@ from models.dbs import db
 
 app = Flask(__name__)
 app.secret_key = 'test'
+app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_AUTH_URL_RULE'] = '/login'
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///flask.db')
