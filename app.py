@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template
 from flask_restful import Api
 from flask_jwt import JWT
@@ -12,16 +13,14 @@ app = Flask(__name__)
 app.secret_key = 'test'
 app.config['JWT_AUTH_URL_RULE'] = '/login'
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///flask.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
-
 api.add_resource(Store, '/store')
 api.add_resource(StoreList, '/stores')
-
 api.add_resource(UserRegister, '/register')
 api.init_app(app)
 
