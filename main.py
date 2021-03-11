@@ -8,20 +8,20 @@ from resources.stores import Store, StoreList
 from datetime import timedelta
 from models.dbs import db
 
+app = Flask(__name__)
+app.secret_key = 'test'
+app.config['JWT_AUTH_URL_RULE'] = '/login'
+app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+api = Api(app)
+jwt = JWT(app, auth, identity)
+
+db.init_app(app)
+db.app = app
+
 if __name__ == '__main__':
-  app = Flask(__name__)
-  app.secret_key = 'test'
-  app.config['JWT_AUTH_URL_RULE'] = '/login'
-  app.config['JWT_EXPIRATION_DELTA'] = timedelta(seconds=1800)
-  app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
-  app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-  api = Api(app)
-  jwt = JWT(app, auth, identity)
-
-  db.init_app(app)
-  db.app = app
-  
   @app.before_first_request
   def migrate():
     db.create_all()
