@@ -21,9 +21,6 @@ jwt = JWT(app, auth, identity)
 db.init_app(app)
 db.app = app
 
-#Heroku.
-application = app
-
 @app.before_first_request
 def migrate():
   db.create_all()
