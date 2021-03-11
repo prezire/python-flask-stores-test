@@ -24,25 +24,20 @@ db.app = app
 #Heroku.
 application = app
 
-if __name__ == '__main__':
-  @app.before_first_request
-  def migrate():
-    db.create_all()
-    
-  @app.route('/')
-  def home():
-    return render_template('index.html')
+@app.before_first_request
+def migrate():
+  db.create_all()
   
-  def main():
-    api.add_resource(Item, '/item/<string:name>')
-    api.add_resource(ItemList, '/items')
-    
-    api.add_resource(Store, '/store')
-    api.add_resource(StoreList, '/stores')
-    
-    api.add_resource(UserRegister, '/register')
-    app.run(debug=True)
-    
-    return app
-    
-  main()
+@app.route('/')
+def home():
+  return render_template('index.html')
+
+if __name__ == '__main__':  
+  api.add_resource(Item, '/item/<string:name>')
+  api.add_resource(ItemList, '/items')
+  
+  api.add_resource(Store, '/store')
+  api.add_resource(StoreList, '/stores')
+  
+  api.add_resource(UserRegister, '/register')
+  app.run(debug=True)
