@@ -16,10 +16,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
+api.add_resource(Item, '/item/<string:name>')
+api.add_resource(ItemList, '/items')
+
+api.add_resource(Store, '/store')
+api.add_resource(StoreList, '/stores')
+
+api.add_resource(UserRegister, '/register')
+api.init_app(app)
+
 jwt = JWT(app, auth, identity)
 
 db.init_app(app)
-db.app = app
 
 @app.before_first_request
 def migrate():
@@ -30,11 +38,5 @@ def home():
   return render_template('index.html')
 
 if __name__ == '__main__':  
-  api.add_resource(Item, '/item/<string:name>')
-  api.add_resource(ItemList, '/items')
   
-  api.add_resource(Store, '/store')
-  api.add_resource(StoreList, '/stores')
-  
-  api.add_resource(UserRegister, '/register')
   app.run(debug=True)
