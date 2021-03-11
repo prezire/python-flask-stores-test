@@ -43,4 +43,6 @@ if __name__ == '__main__':
     api.add_resource(UserRegister, '/register')
     app.run(debug=True)
     
+    return app
+    
   main()
