@@ -15,19 +15,27 @@ class User(db.Model):
   def save(self):
     db.session.add(self)
     db.session.commit()
-    return self.find_by_id(self.id)
+    return self.find(self.id)
+    
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+    return True
     
   @classmethod
   def find_by_username(cls, username:str):
     return cls.query.filter_by(username=username).first()
     
   @classmethod
-  def find_by_id(cls, id:int):
+  def all(cls):
+    return cls.query.all()
+    
+  @classmethod
+  def find(cls, id:int):
     return cls.query.filter_by(id=id).first()
     
   def json(self):
-    s = self.stores
     stores = None
-    if s:
-      stores = [s.json() for s in s.all()]
+    if self.stores:
+      stores = [store.json() for store in self.stores]
     return {'id': self.id, 'username': self.username, 'stores': stores}

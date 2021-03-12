@@ -7,4 +7,4 @@ def auth(username:str, password:str):
     return user
     
 def identity(payload):
-  return User.find_by_id(payload['identity'])
+  return User.find(payload['identity'])
