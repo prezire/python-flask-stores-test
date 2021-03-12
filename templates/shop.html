@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <div>
+    Sample Product 1
+    Price: $99
+    <button class="btn-checkout">Checkout</button>
+    {{url_for('thank_you', _external=True)}}
+    {{url_for('shop', _external=True)}}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="{{url_for('static', filename='scripts/shop.js')}}"></script>
+{% endblock %}

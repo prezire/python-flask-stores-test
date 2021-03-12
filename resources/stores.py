@@ -4,7 +4,16 @@ from models.stores import Store as StoreModel
 
 class Store(Resource):
   
-  def __uid(self) -> int:
+  @staticmethod
+  def __exists(name:str) -> bool:
+    return StoreModel.find_by_name(name) is not None
+    
+  @staticmethod
+  def __show_exists_err(name:str):
+    return {'message': f'The store {name} already exists.'}, 302
+  
+  @staticmethod
+  def __uid() -> int:
     return current_identity.id
   
   @staticmethod
@@ -22,7 +31,10 @@ class Store(Resource):
   
   @jwt_required()
   def post(self):
-    return {'store': StoreModel(self.__name_arg(), self.__uid()).save().json()}
+    name = self.__name_arg()
+    if Store.__exists(name):
+      return Store.__show_exists_err(name)
+    return {'store': StoreModel(name, Store.__uid()).save().json()}
   
   @jwt_required()
   def put(self):
@@ -32,13 +44,15 @@ class Store(Resource):
     args = p.parse_args()
     old_name = args['old_name']
     new_name = args['new_name']
+    if Store.__exists(new_name):
+      return Store.__show_exists_err(new_name)
     store = StoreModel.find_by_name(old_name)
     stat = 'created'
     if store:
       store.name = new_name
       stat = 'updated'
     else:
-      store = StoreModel(old_name, self.__uid())
+      store = StoreModel(old_name, Store.__uid())
     store.save()
     return {stat: store.json()}
   

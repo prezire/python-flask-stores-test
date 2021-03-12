@@ -2,7 +2,8 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 from models.items import Item as ItemModel
 
-class Item(Resource):    
+class Item(Resource):
+    
   @staticmethod
   def __req_args():
     parser = reqparse.RequestParser()
@@ -20,6 +21,8 @@ class Item(Resource):
   @jwt_required()
   def post(self, name:str):
     data = self.__req_args()
+    if ItemModel.find_by_name(name) is not None:
+      return {'message': f'Item {name} already exists.'}, 302
     item = ItemModel(name, data['price'], data['store_id']).save()
     return {'item': item.json()}
     
