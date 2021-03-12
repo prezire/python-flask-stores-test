@@ -3,7 +3,7 @@ from flask import Flask, render_template
 from flask_restful import Api
 from flask_jwt import JWT
 from securities import auth, identity
-from resources.users import Register as UserRegister
+from resources.users import Register as UserRegister, User, UserList
 from resources.items import Item, ItemList
 from resources.stores import Store, StoreList
 from datetime import timedelta
@@ -23,6 +23,8 @@ api.add_resource(ItemList, '/items')
 api.add_resource(Store, '/store')
 api.add_resource(StoreList, '/stores')
 api.add_resource(UserRegister, '/register')
+api.add_resource(User, '/user/<int:id>')
+api.add_resource(UserList, '/users')
 api.init_app(app)
 
 jwt = JWT(app, auth, identity)
@@ -37,6 +39,5 @@ def migrate():
 def home():
   return render_template('index.html')
 
-if __name__ == '__main__':  
-  
+if __name__ == '__main__':
   app.run(debug=True)
