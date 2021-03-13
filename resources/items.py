@@ -1,6 +1,9 @@
 from flask_restful import Resource, reqparse
-from flask_jwt import jwt_required
+from flask_jwt_extended import jwt_required, get_current_user
 from models.items import Item as ItemModel
+from authorizations.gates import Delete
+from acls.messages import Permission
+from flask import abort
 
 class Item(Resource):    
   @staticmethod
@@ -25,6 +28,8 @@ class Item(Resource):
     
   @jwt_required()
   def delete(self, name:str):
+    if not Delete.can():
+      return Permission.denied()
     item = ItemModel.find_by_name(name)
     if not item:
       return {'message': 'No items to delete.'}, 404
@@ -49,4 +54,6 @@ class Item(Resource):
 class ItemList(Resource):
   @jwt_required()
   def get(self):
+    if not Delete.can():
+      return Permission.denied()
     return {'items': [i.json() for i in ItemModel.all()]}

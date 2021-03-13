@@ -1,11 +1,15 @@
-from flask_jwt import jwt_required, current_identity
+from flask_jwt_extended import jwt_required, get_current_user#, current_identity
 from flask_restful import Resource, reqparse
 from models.stores import Store as StoreModel
+from authorizations.gates import Delete
+from acls.messages import Permission
+from authorizations.gates import Delete
+from acls.messages import Permission
 
 class Store(Resource):
   
   def __uid(self) -> int:
-    return current_identity.id
+    return get_current_user()['payload']['sub']
   
   @staticmethod
   def __name_arg():
@@ -44,6 +48,8 @@ class Store(Resource):
   
   @jwt_required()
   def delete(self):
+    if not Delete.can():
+      return Permission.denied()
     store = StoreModel.find_by_name(self.__name_arg())
     if store:
       return {'deleted': store.delete()}
